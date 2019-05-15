@@ -12,6 +12,9 @@ class ChessBoard extends StatelessWidget {
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.width,
       child: GridView.count(
+        shrinkWrap: true,
+        primary: true,
+        physics: NeverScrollableScrollPhysics(),
         crossAxisCount: 8,
         children: squares,
       ),

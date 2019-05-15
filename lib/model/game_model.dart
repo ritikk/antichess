@@ -15,6 +15,9 @@ class GameModel with ChangeNotifier {
     this._streamController = this._getStreamController();
   }
 
+  static const String WHITE = 'w';
+  static const String BLACK = 'b';
+
   StreamController _getStreamController() {
     StreamController<chess.Move> _sc = StreamController();
     _sc.stream.listen((move) {
@@ -48,7 +51,6 @@ class GameModel with ChangeNotifier {
       {@required String source,
       @required String destination,
       String promoteTo}) {
-
     //unselect any selected pieces
     _selectedPiece = null;
     notifyListeners();

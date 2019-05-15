@@ -1,15 +1,16 @@
 import 'package:antichess/model/game_model.dart';
+import 'package:antichess/model/player_model.dart';
 import 'package:antichess/widgets/util/widget_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:provider/provider.dart';
 
 class PlayerDetails extends StatelessWidget {
-  final String playerData;
+  final PlayerModel player;
   final String timeLeft;
   final String color;
   const PlayerDetails({
     Key key,
-    @required this.playerData,
+    @required this.player,
     @required this.timeLeft,
     @required this.color,
   }) : super(key: key);
@@ -27,7 +28,7 @@ class PlayerDetails extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                playerData,
+                '${player.firstName} ${player.lastName}  (${player.rating})',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Wrap(
