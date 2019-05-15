@@ -1,4 +1,5 @@
 import 'package:antichess/widgets/game_page.dart';
+import 'package:antichess/widgets/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,10 +14,12 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return CupertinoApp(
       title: 'Anti Chess',
-      home: ChangeNotifierProvider<GameModel>(
-          builder: (_) => GameModel(new chess.Chess()),
-          child: GamePage(title: 'Anti Chess')),
       debugShowCheckedModeBanner: false,
+      routes: <String, WidgetBuilder>{
+        '/': (context) => HomePage(),
+        '/game': (context) => ChangeNotifierProvider<GameModel>(
+            builder: (_) => GameModel(new chess.Chess()), child: GamePage())
+      },
     );
   }
 }

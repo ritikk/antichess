@@ -50,7 +50,12 @@ class _GamePageState extends State<GamePage> {
         automaticallyImplyLeading: false,
         backgroundColor: CupertinoColors.darkBackgroundGray,
         actionsForegroundColor: CupertinoColors.white,
-        leading: Icon(CupertinoIcons.conversation_bubble),
+        leading: CupertinoButton(
+          child: Icon(CupertinoIcons.conversation_bubble),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         middle: Text(
           'Anti Chess',
           style: TextStyle(color: CupertinoColors.white, fontSize: 20),
