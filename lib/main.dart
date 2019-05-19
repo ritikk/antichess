@@ -1,3 +1,4 @@
+import 'package:antichess/widgets/find_opponent_page.dart';
 import 'package:antichess/widgets/game_page.dart';
 import 'package:antichess/widgets/home_page.dart';
 import 'package:flutter/cupertino.dart';
@@ -18,7 +19,8 @@ class MyApp extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         '/': (context) => HomePage(),
         '/game': (context) => ChangeNotifierProvider<GameModel>(
-            builder: (_) => GameModel(new chess.Chess()), child: GamePage())
+            builder: (_) => GameModel(new chess.Chess()), child: GamePage()),
+        '/find-opponent': (context) => FindOpponentPage(),
       },
     );
   }

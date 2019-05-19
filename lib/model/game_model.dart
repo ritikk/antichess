@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:antichess/model/game_clock.dart';
 import 'package:antichess/model/piece_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:chess/chess.dart' as chess;
@@ -10,13 +11,33 @@ class GameModel with ChangeNotifier {
   StreamController<chess.Move> _streamController;
   PieceModel _selectedPiece;
   Map<String, String> _lastMove;
+  GameClock _gameClock;
+  String _winner;
 
   GameModel(this._game) {
     this._streamController = this._getStreamController();
+    _gameClock = GameClock(Duration(seconds: 60), _clockTimeOut);
+    _gameClock.turnWhite();
   }
 
   static const String WHITE = 'w';
   static const String BLACK = 'b';
+
+  String get timeLeftWhite {
+    return _gameClock.getWhiteTimeLeft();
+  }
+
+  String get timeLeftBlack {
+    return _gameClock.getBlackTimeLeft();
+  }
+
+  String get winner {
+    return _winner;
+  }
+
+  void _clockTimeOut(String turn) {
+    endGame(winner: turn == WHITE ? BLACK : WHITE);
+  }
 
   StreamController _getStreamController() {
     StreamController<chess.Move> _sc = StreamController();
@@ -32,11 +53,24 @@ class GameModel with ChangeNotifier {
 
   void _handleMove(chess.Move move) {
     _game.make_move(move);
-    _isGameOver = _game.moves({'legal': false}).length == 0;
-    if (_isGameOver) {
-      _streamController.close();
+    if (_game.moves({'legal': false}).length == 0) {
+      endGame(winner: _game.turn.toString());
+    } else {
+      _game.turn.toString() == WHITE
+          ? _gameClock.turnWhite()
+          : _gameClock.turnBlack();
     }
     setLastMove();
+    notifyListeners();
+  }
+
+  void endGame({String winner}) {
+    if (winner != null) {
+      _winner = winner;
+    }
+    _isGameOver = true;
+    _streamController.close();
+    _gameClock.stopClock();
     notifyListeners();
   }
 
@@ -97,7 +131,7 @@ class GameModel with ChangeNotifier {
       }
 
       //Send the move to the stream
-      _streamController.add(moveObj);
+      if (!_streamController.isClosed) _streamController.add(moveObj);
       return true;
     }
     return false;
@@ -108,7 +142,10 @@ class GameModel with ChangeNotifier {
     _lastMove = null;
     _streamController.close();
     _streamController = this._getStreamController();
+    _gameClock.stopClock();
+    _gameClock = GameClock(Duration(seconds: 60), this._clockTimeOut);
     _game = chess.Chess();
+    _gameClock.turnWhite();
     notifyListeners();
   }
 

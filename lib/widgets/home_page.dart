@@ -59,12 +59,13 @@ class HomePage extends StatelessWidget {
                 children: <Widget>[
                   Expanded(
                     child: CupertinoButton.filled(
-                      child: Text('NEW GAME', style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold
-                      ),),
+                      child: Text(
+                        'NEW GAME',
+                        style: TextStyle(
+                            fontSize: 20.0, fontWeight: FontWeight.bold),
+                      ),
                       onPressed: () {
-                        Navigator.of(context).pushNamed('/game');
+                        Navigator.of(context).pushNamed('/find-opponent');
                       },
                     ),
                   )

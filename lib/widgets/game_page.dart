@@ -1,7 +1,5 @@
-import 'dart:math';
-
 import 'package:antichess/model/game_model.dart';
-import 'package:antichess/model/mocks.dart';
+import 'package:antichess/model/game_players_model.dart';
 import 'package:antichess/widgets/pgn_bar.dart';
 import 'package:antichess/widgets/player_details.dart';
 import 'package:flutter/cupertino.dart';
@@ -22,6 +20,7 @@ class _GamePageState extends State<GamePage> {
   bool _showUndoButton = false;
   bool _isGameOver = false;
   String _turn = 'w';
+  String _winner;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +35,7 @@ class _GamePageState extends State<GamePage> {
       if (!_isGameOver) {
         setState(() {
           _isGameOver = model.isGameOver();
+          _winner = model.winner;
         });
       }
       setState(() {
@@ -45,14 +45,17 @@ class _GamePageState extends State<GamePage> {
 
     model.addListener(_updateGameSreen);
 
+    final GamePlayersModel players = ModalRoute.of(context).settings.arguments;
+
     return CupertinoPageScaffold(
       navigationBar: CupertinoNavigationBar(
         automaticallyImplyLeading: false,
         backgroundColor: CupertinoColors.darkBackgroundGray,
         actionsForegroundColor: CupertinoColors.white,
         leading: CupertinoButton(
-          child: Icon(CupertinoIcons.conversation_bubble),
+          child: Icon(CupertinoIcons.home),
           onPressed: () {
+            model.endGame();
             Navigator.pop(context);
           },
         ),
@@ -60,7 +63,7 @@ class _GamePageState extends State<GamePage> {
           'Anti Chess',
           style: TextStyle(color: CupertinoColors.white, fontSize: 20),
         ),
-        trailing: Icon(CupertinoIcons.volume_mute),
+        trailing: Icon(CupertinoIcons.volume_off),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -68,17 +71,17 @@ class _GamePageState extends State<GamePage> {
         children: <Widget>[
           PGNBar(),
           PlayerDetails(
-            player: Mocks.players[Random(1).nextInt(4)],
+            player: players.opponent,
             color: GameModel.BLACK,
-            timeLeft: '1:00',
+            timeLeft: model.timeLeftBlack,
           ),
           ChessBoard(),
           PlayerDetails(
-            player: Mocks.players[0],
+            player: players.self,
             color: GameModel.WHITE,
-            timeLeft: '1:00',
+            timeLeft: model.timeLeftWhite,
           ),
-          _isGameOver ? Text('Game Over! $_turn Wins') : Container(),
+          _isGameOver ? Text('Game Over! $_winner Wins') : Container(),
           CupertinoButton.filled(
             child: Text('Reset'),
             onPressed: () {
